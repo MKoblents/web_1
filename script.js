@@ -8,6 +8,45 @@ const R = 2;
 const scale = 100;
 
 
+function toCanvasX(x){
+    return centerX + x*scale;
+}
+
+function toCanvasY(y){
+    return centerY - y*scale;
+}
+
+ctx.fillStyle='rgba(52,152,219,0.7)';
+ctx.fillRect(
+    toCanvasX(-R),
+    toCanvasY(R),
+    R*scale,
+    R*scale
+);
+
+ctx.beginPath();
+ctx.moveTo(toCanvasX(0), toCanvasY(0));
+ctx.lineTo(toCanvasX(R/2), toCanvasY(0));
+ctx.lineTo(toCanvasX(0), toCanvasY(R/2));
+ctx.closePath();
+ctx.fillStyle='rgba(52,152,219,0.7)';
+ctx.fill();
+
+ctx.beginPath();
+ctx.moveTo(toCanvasX(0), toCanvasY(0));
+ctx.lineTo(toCanvasX(R/2), toCanvasY(0));
+ctx.arc(
+    toCanvasX(0),
+    toCanvasY(0),
+    (R/2)*scale,
+    0,
+    Math.PI/2,
+    false
+)
+ctx.closePath();
+ctx.fillStyle='rgba(52,152,219,0.7)';
+ctx.fill();
+
 ctx.beginPath();
 ctx.moveTo(0, centerY);
 ctx.lineTo(width, centerY);
@@ -38,15 +77,6 @@ ctx.font = '20px Arial';
 ctx.fillStyle = 'black';
 ctx.fillText('X', width - 20, centerY - 10);
 ctx.fillText('Y', centerX -20, 20);
-
-function toCanvasX(x){
-    return centerX + x*scale;
-}
-
-function toCanvasY(y){
-    return centerY - y*scale;
-}
-
 const xMarks = [-R, -R/2, R/2, R];
 ctx.font = '20px Arial';
 ctx.textAlign = 'center';
@@ -85,34 +115,3 @@ yMarks.forEach(function(y) {
 
     ctx.fillText(label, centerX - 10, canvasY + 5);
 });
-
-ctx.fillStyle='rgba(52,152,219,0.7)';
-ctx.fillRect(
-    toCanvasX(-R),
-    toCanvasY(R),
-    R*scale,
-    R*scale
-);
-
-ctx.beginPath();
-ctx.moveTo(toCanvasX(0), toCanvasY(0));
-ctx.lineTo(toCanvasX(R/2), toCanvasY(0));
-ctx.lineTo(toCanvasX(0), toCanvasY(R/2));
-ctx.closePath();
-ctx.fillStyle='rgba(52,152,219,0.7)';
-ctx.fill();
-
-ctx.beginPath();
-ctx.moveTo(toCanvasX(0), toCanvasY(0));
-ctx.lineTo(toCanvasX(R/2), toCanvasY(0));
-ctx.arc(
-    toCanvasX(0),
-    toCanvasY(0),
-    (R/2)*scale,
-    0,
-    Math.PI/2,
-    false
-)
-ctx.closePath();
-ctx.fillStyle='rgba(52,152,219,0.7)';
-ctx.fill();
