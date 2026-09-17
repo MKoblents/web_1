@@ -158,9 +158,21 @@ form.addEventListener('submit', function (event){
     }
 
     if (isValid){
-        //todo
+        const xNum = parseFloat(x);
+        const yNum = parseFloat(y);
+        const rNum = parseFloat(r);
+
+        const isHit = checkHit(xNum, yNum, rNum);
+
+        console.log('Точка (' + xNum + ', ' + yNum + ') при R=' + rNum);
+        console.log('Попала:', isHit);
     }
 });
+function checkHit(x, y, R) {
+    const inSquare = (x >= -R && x <= 0) && (y >= 0 && y <= R);
+    const inCircle = (x >= 0 && y <= 0) && (x * x + y * y <= (R / 2) * (R / 2));
+    return inSquare || inCircle;
+}
 
 function getSelectedRadioValue(name){
     const selected = document.querySelector('input[name="${name}"]');
