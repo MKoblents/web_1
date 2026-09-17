@@ -115,3 +115,69 @@ yMarks.forEach(function(y) {
 
     ctx.fillText(label, centerX - 10, canvasY + 5);
 });
+
+const y = document.getElementById('y-input').value;
+const selectedX = document.querySelector('input[name="x"]:checked');
+if (selectedX) {
+    const xValue = selectedX.value;
+    console.log(xValue);
+}
+
+const form = document.getElementById('point-form');
+
+form.addEventListener('submit', function (event){
+    event.preventDefault();
+    clearErrors();
+    const x = getSelectedRadioValue('x');
+    const y = document.getElementById('y-input').value.trim();
+    const r = getSelectedRadioValue('r');
+
+    let isValid = true;
+
+    if (x ===null){
+        showError('x-error', "Выберите значение Х" );
+        isValid = false;
+    }
+    if (y === '') {
+        showError('y-error', 'Введите значение Y');
+        isValid = false;
+    } else if (isNaN(parseFloat(y))) {
+        showError('y-error', 'Y должен быть числом');
+        isValid = false;
+    } else {
+        const yNum = parseFloat(y);
+        if (yNum < -3 || yNum > 5) {
+            showError('y-error', 'Y должен быть от -3 до 5');
+            isValid = false;
+        }
+    }
+
+    if (r === null) {
+        showError('r-error', 'Выберите значение R');
+        isValid = false;
+    }
+
+    if (isValid){
+        //todo
+    }
+});
+
+function getSelectedRadioValue(name){
+    const selected = document.querySelector('input[name="${name}"]');
+    if (selected){
+        return selected.value;
+    }
+    return null;
+}
+
+function showError(elementId, message){
+    const errorElement = document.getElementById(elementId);
+    errorElement.textContent = message;
+}
+
+function clearErrors(){
+    const errorElements = document.querySelectorAll('.error-message');
+    errorElements.forEach(function(element){
+        element.textContent='';
+    });
+}
