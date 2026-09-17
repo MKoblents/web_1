@@ -207,3 +207,40 @@ input[type="text"]:invalid:not(:placeholder-shown) {
 input[type="text"]:valid:not(:placeholder-shown) {
     border-color: #27ae60;
 }
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.results-table th,
+.results-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.results-table th {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
+.results-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.results-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.hit {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.miss {
+    color: #e74c3c;
+    font-weight: bold;
+}

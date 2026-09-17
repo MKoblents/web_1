@@ -163,9 +163,10 @@ form.addEventListener('submit', function (event){
         const rNum = parseFloat(r);
 
         const isHit = checkHit(xNum, yNum, rNum);
+        redrawCanvas(rNum);
 
-        console.log('Точка (' + xNum + ', ' + yNum + ') при R=' + rNum);
-        console.log('Попала:', isHit);
+        drawPoint(xNum, yNum, rNum, isHit);
+        addResultToTable(xNum, yNum, rNum, isHit);
     }
 });
 function checkHit(x, y, R) {
@@ -175,7 +176,7 @@ function checkHit(x, y, R) {
 }
 
 function getSelectedRadioValue(name){
-    const selected = document.querySelector('input[name="${name}"]');
+    const selected = document.querySelector(`input[name="${name}"]:checked`);
     if (selected){
         return selected.value;
     }
@@ -192,4 +193,140 @@ function clearErrors(){
     errorElements.forEach(function(element){
         element.textContent='';
     });
+}
+
+function drawPoint(x, y, R, isHit) {
+    const canvasX = toCanvasX(x);
+    const canvasY = toCanvasY(y);
+
+    ctx.fillStyle = isHit ? '#27ae60' : '#e74c3c';
+
+    ctx.beginPath();
+    ctx.arc(canvasX, canvasY, 6, 0, 2 * Math.PI);
+    ctx.fill();
+
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+}
+function redrawCanvas(R) {
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.beginPath();
+    ctx.moveTo(0, centerY);
+    ctx.lineTo(width, centerY);
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(centerX, 0);
+    ctx.lineTo(centerX, height);
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(width - 10, centerY - 5);
+    ctx.lineTo(width, centerY);
+    ctx.lineTo(width - 10, centerY + 5);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(centerX - 5, 10);
+    ctx.lineTo(centerX, 0);
+    ctx.lineTo(centerX + 5, 10);
+    ctx.stroke();
+
+    ctx.font = '16px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText('X', width - 20, centerY - 10);
+    ctx.fillText('Y', centerX + 10, 20);
+
+    const scale = (width / 2) / R;
+
+    const xMarks = [-R, -R/2, R/2, R];
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+
+    xMarks.forEach(function(x) {
+        const canvasX = centerX + x * scale;
+
+        ctx.beginPath();
+        ctx.moveTo(canvasX, centerY - 5);
+        ctx.lineTo(canvasX, centerY + 5);
+        ctx.stroke();
+
+        let label = x;
+        if (x === -R) label = '-R';
+        else if (x === -R/2) label = '-R/2';
+        else if (x === R/2) label = 'R/2';
+        else if (x === R) label = 'R';
+
+        ctx.fillText(label, canvasX, centerY + 20);
+    });
+
+    const yMarks = [-R, -R/2, R/2, R];
+    ctx.textAlign = 'right';
+
+    yMarks.forEach(function(y) {
+        const canvasY = centerY - y * scale;
+
+        ctx.beginPath();
+        ctx.moveTo(centerX - 5, canvasY);
+        ctx.lineTo(centerX + 5, canvasY);
+        ctx.stroke();
+
+        let label = y;
+        if (y === -R) label = '-R';
+        else if (y === -R/2) label = '-R/2';
+        else if (y === R/2) label = 'R/2';
+        else if (y === R) label = 'R';
+
+        ctx.fillText(label, centerX - 10, canvasY + 5);
+    });
+
+    ctx.fillStyle = 'rgba(52, 152, 219, 0.7)';
+    ctx.fillRect(
+        centerX + (-R) * scale,
+        centerY - R * scale,
+        R * scale,
+        R * scale
+    );
+
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(centerX + (R/2) * scale, centerY);
+    ctx.arc(centerX, centerY, (R / 2) * scale, 0, Math.PI / 2, false);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(52, 152, 219, 0.7)';
+    ctx.fill();
+}
+function addResultToTable(x, y, R, isHit) {
+    const tbody = document.getElementById('results-body');
+    const row = document.createElement('tr');
+    const cellX = document.createElement('td');
+    cellX.textContent = x;
+
+    const cellY = document.createElement('td');
+    cellY.textContent = y;
+
+    const cellR = document.createElement('td');
+    cellR.textContent = R;
+
+    const cellResult = document.createElement('td');
+    cellResult.textContent = isHit ? 'Попала' : 'Не попала';
+    cellResult.className = isHit ? 'hit' : 'miss';
+
+    const cellTime = document.createElement('td');
+    const now = new Date();
+    cellTime.textContent = now.toLocaleString('ru-RU');
+
+    row.appendChild(cellX);
+    row.appendChild(cellY);
+    row.appendChild(cellR);
+    row.appendChild(cellResult);
+    row.appendChild(cellTime);
+
+    tbody.appendChild(row);
 }
