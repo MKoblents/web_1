@@ -181,7 +181,6 @@ form.addEventListener('submit',async  function (event){
         const row =createResultRow(result);
         document.getElementById('results-body').appendChild(row);
         await saveToLocalStorage(result);
-        //addResultToTable(xNum, yNum, rNum, isHit);
     }
 });
 document.addEventListener('DOMContentLoaded', async () => {
@@ -230,128 +229,6 @@ function drawPoint(x, y, R, isHit) {
     ctx.lineWidth = 2;
     ctx.stroke();
 }
-function redrawCanvas(R) {
-    ctx.clearRect(0, 0, width, height0, 0, width, height);
-
-    ctx.beginPath();
-    ctx.moveTo(0, centerY);
-    ctx.lineTo(width, centerY);
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(centerX, 0);
-    ctx.lineTo(centerX, height);
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(width - 10, centerY - 5);
-    ctx.lineTo(width, centerY);
-    ctx.lineTo(width - 10, centerY + 5);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(centerX - 5, 10);
-    ctx.lineTo(centerX, 0);
-    ctx.lineTo(centerX + 5, 10);
-    ctx.stroke();
-
-    ctx.font = '16px Arial';
-    ctx.fillStyle = 'black';
-    ctx.fillText('X', width - 20, centerY - 10);
-    ctx.fillText('Y', centerX + 10, 20);
-
-    const scale = (width / 2) / R;
-
-    const xMarks = [-R, -R/2, R/2, R];
-    ctx.font = '18px Arial';
-    ctx.textAlign = 'center';
-
-    xMarks.forEach(function(x) {
-        const canvasX = centerX + x * scale;
-
-        ctx.beginPath();
-        ctx.moveTo(canvasX, centerY - 5);
-        ctx.lineTo(canvasX, centerY + 5);
-        ctx.stroke();
-
-        let label = x;
-        if (x === -R) label = '-R';
-        else if (x === -R/2) label = '-R/2';
-        else if (x === R/2) label = 'R/2';
-        else if (x === R) label = 'R';
-
-        ctx.fillText(label, canvasX, centerY + 20);
-    });
-
-    const yMarks = [-R, -R/2, R/2, R];
-    ctx.textAlign = 'right';
-
-    yMarks.forEach(function(y) {
-        const canvasY = centerY - y * scale;
-
-        ctx.beginPath();
-        ctx.moveTo(centerX - 5, canvasY);
-        ctx.lineTo(centerX + 5, canvasY);
-        ctx.stroke();
-
-        let label = y;
-        if (y === -R) label = '-R';
-        else if (y === -R/2) label = '-R/2';
-        else if (y === R/2) label = 'R/2';
-        else if (y === R) label = 'R';
-
-        ctx.fillText(label, centerX - 10, canvasY + 5);
-    });
-
-    ctx.fillStyle = 'rgba(52, 152, 219, 0.7)';
-    ctx.fillRect(
-        centerX + (-R) * scale,
-        centerY - R * scale,
-        R * scale,
-        R * scale
-    );
-
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.lineTo(centerX + (R/2) * scale, centerY);
-    ctx.arc(centerX, centerY, (R / 2) * scale, 0, Math.PI / 2, false);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(52, 152, 219, 0.7)';
-    ctx.fill();
-}
-// function addResultToTable(x, y, R, isHit) {
-//     const tbody = document.getElementById('results-body');
-//     const row = document.createElement('tr');
-//     const cellX = document.createElement('td');
-//     cellX.textContent = x;
-//
-//     const cellY = document.createElement('td');
-//     cellY.textContent = y;
-//
-//     const cellR = document.createElement('td');
-//     cellR.textContent = R;
-//
-//     const cellResult = document.createElement('td');
-//     cellResult.textContent = isHit ? 'Попала' : 'Не попала';
-//     cellResult.className = isHit ? 'hit' : 'miss';
-//
-//     const cellTime = document.createElement('td');
-//     const now = new Date();
-//     cellTime.textContent = now.toLocaleString('ru-RU');
-//
-//     row.appendChild(cellX);
-//     row.appendChild(cellY);
-//     row.appendChild(cellR);
-//     row.appendChild(cellResult);
-//     row.appendChild(cellTime);
-//
-//     tbody.appendChild(row);
-// }
-
 function saveToLocalStorage(result){
     try{
         const results = JSON.parse(localStorage.getItem('pointResults')|| '[]');

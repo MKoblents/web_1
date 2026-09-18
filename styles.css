@@ -294,3 +294,40 @@ input[type="text"]:valid:not(:placeholder-shown) {
     color: #e74c3c;
     font-weight: bold;
 }
+
+.table-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.results-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #3498db;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.results-table tbody tr:first-child td {
+    border-top: none;
+}
+
+.table-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #3498db;
+    border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
+}
