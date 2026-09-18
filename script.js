@@ -11,11 +11,13 @@ const scale = 100;
 function toCanvasX(x){
     return centerX + x*scale;
 }
-
+function numberRelativeToR(n, r){
+    return n*R/r;
+}
 function toCanvasY(y){
     return centerY - y*scale;
 }
-
+function drawCanvas(R){
 ctx.fillStyle='rgba(52,152,219,0.7)';
 ctx.fillRect(
     toCanvasX(-R),
@@ -72,7 +74,8 @@ ctx.moveTo(centerX - 5, 10);
 ctx.lineTo(centerX, 0);
 ctx.lineTo(centerX + 5, 10);
 ctx.stroke();
-
+}
+drawCanvas(R);
 ctx.font = '20px Arial';
 ctx.fillStyle = 'black';
 ctx.fillText('X', width - 20, centerY - 10);
@@ -163,7 +166,7 @@ form.addEventListener('submit', function (event){
         const rNum = parseFloat(r);
 
         const isHit = checkHit(xNum, yNum, rNum);
-        redrawCanvas(rNum);
+        // redrawCanvas(rNum);
 
         drawPoint(xNum, yNum, rNum, isHit);
         addResultToTable(xNum, yNum, rNum, isHit);
@@ -172,7 +175,8 @@ form.addEventListener('submit', function (event){
 function checkHit(x, y, R) {
     const inSquare = (x >= -R && x <= 0) && (y >= 0 && y <= R);
     const inCircle = (x >= 0 && y <= 0) && (x * x + y * y <= (R / 2) * (R / 2));
-    return inSquare || inCircle;
+    const inTriangle = (x>=0 && y>=0) && (y<=-x +R/2);
+    return inSquare || inCircle || inTriangle;
 }
 
 function getSelectedRadioValue(name){
@@ -196,8 +200,8 @@ function clearErrors(){
 }
 
 function drawPoint(x, y, R, isHit) {
-    const canvasX = toCanvasX(x);
-    const canvasY = toCanvasY(y);
+    const canvasX = toCanvasX(numberRelativeToR(x, R));
+    const canvasY = toCanvasY(numberRelativeToR(y,R));
 
     ctx.fillStyle = isHit ? '#27ae60' : '#e74c3c';
 
@@ -246,7 +250,7 @@ function redrawCanvas(R) {
     const scale = (width / 2) / R;
 
     const xMarks = [-R, -R/2, R/2, R];
-    ctx.font = '12px Arial';
+    ctx.font = '18px Arial';
     ctx.textAlign = 'center';
 
     xMarks.forEach(function(x) {
