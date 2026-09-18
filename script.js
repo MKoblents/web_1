@@ -76,6 +76,7 @@ function drawCanvas(R){
     ctx.stroke();
 }
 drawCanvas(R);
+
 ctx.font = '20px Arial';
 ctx.fillStyle = 'black';
 ctx.fillText('X', width - 20, centerY - 10);
