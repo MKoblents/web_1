@@ -18,62 +18,62 @@ function toCanvasY(y){
     return centerY - y*scale;
 }
 function drawCanvas(R){
-ctx.fillStyle='rgba(52,152,219,0.7)';
-ctx.fillRect(
-    toCanvasX(-R),
-    toCanvasY(R),
-    R*scale,
-    R*scale
-);
+    ctx.fillStyle='rgba(52,152,219,0.7)';
+    ctx.fillRect(
+        toCanvasX(-R),
+        toCanvasY(R),
+        R*scale,
+        R*scale
+    );
 
-ctx.beginPath();
-ctx.moveTo(toCanvasX(0), toCanvasY(0));
-ctx.lineTo(toCanvasX(R/2), toCanvasY(0));
-ctx.lineTo(toCanvasX(0), toCanvasY(R/2));
-ctx.closePath();
-ctx.fillStyle='rgba(52,152,219,0.7)';
-ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(toCanvasX(0), toCanvasY(0));
+    ctx.lineTo(toCanvasX(R/2), toCanvasY(0));
+    ctx.lineTo(toCanvasX(0), toCanvasY(R/2));
+    ctx.closePath();
+    ctx.fillStyle='rgba(52,152,219,0.7)';
+    ctx.fill();
 
-ctx.beginPath();
-ctx.moveTo(toCanvasX(0), toCanvasY(0));
-ctx.lineTo(toCanvasX(R/2), toCanvasY(0));
-ctx.arc(
-    toCanvasX(0),
-    toCanvasY(0),
-    (R/2)*scale,
-    0,
-    Math.PI/2,
-    false
-)
-ctx.closePath();
-ctx.fillStyle='rgba(52,152,219,0.7)';
-ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(toCanvasX(0), toCanvasY(0));
+    ctx.lineTo(toCanvasX(R/2), toCanvasY(0));
+    ctx.arc(
+        toCanvasX(0),
+        toCanvasY(0),
+        (R/2)*scale,
+        0,
+        Math.PI/2,
+        false
+    )
+    ctx.closePath();
+    ctx.fillStyle='rgba(52,152,219,0.7)';
+    ctx.fill();
 
-ctx.beginPath();
-ctx.moveTo(0, centerY);
-ctx.lineTo(width, centerY);
-ctx.strokeStyle = 'black';
-ctx.lineWidth = 2;
-ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, centerY);
+    ctx.lineTo(width, centerY);
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
-ctx.beginPath();
-ctx.moveTo(centerX, 0);
-ctx.lineTo(centerX, height);
-ctx.strokeStyle = 'black';
-ctx.lineWidth = 2;
-ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(centerX, 0);
+    ctx.lineTo(centerX, height);
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
-ctx.beginPath();
-ctx.moveTo(width - 10, centerY - 5);
-ctx.lineTo(width, centerY);
-ctx.lineTo(width - 10, centerY + 5);
-ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(width - 10, centerY - 5);
+    ctx.lineTo(width, centerY);
+    ctx.lineTo(width - 10, centerY + 5);
+    ctx.stroke();
 
-ctx.beginPath();
-ctx.moveTo(centerX - 5, 10);
-ctx.lineTo(centerX, 0);
-ctx.lineTo(centerX + 5, 10);
-ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(centerX - 5, 10);
+    ctx.lineTo(centerX, 0);
+    ctx.lineTo(centerX + 5, 10);
+    ctx.stroke();
 }
 drawCanvas(R);
 ctx.font = '20px Arial';
@@ -128,7 +128,7 @@ if (selectedX) {
 
 const form = document.getElementById('point-form');
 
-form.addEventListener('submit', function (event){
+form.addEventListener('submit',async  function (event){
     event.preventDefault();
     clearErrors();
     const x = getSelectedRadioValue('x');
@@ -166,11 +166,23 @@ form.addEventListener('submit', function (event){
         const rNum = parseFloat(r);
 
         const isHit = checkHit(xNum, yNum, rNum);
-        // redrawCanvas(rNum);
-
         drawPoint(xNum, yNum, rNum, isHit);
-        addResultToTable(xNum, yNum, rNum, isHit);
+        const result = {
+            x: xNum,
+            y: yNum,
+            r: rNum,
+            isHit: isHit,
+            timestamp: new Date().toISOString()
+        };
+        const row =createResultRow(result);
+        document.getElementById('results-body').appendChild(row);
+        await saveToLocalStorage(result);
+        //addResultToTable(xNum, yNum, rNum, isHit);
     }
+});
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadFromLocalStorage();
+    drawCanvas(R);
 });
 function checkHit(x, y, R) {
     const inSquare = (x >= -R && x <= 0) && (y >= 0 && y <= R);
@@ -306,25 +318,81 @@ function redrawCanvas(R) {
     ctx.fillStyle = 'rgba(52, 152, 219, 0.7)';
     ctx.fill();
 }
-function addResultToTable(x, y, R, isHit) {
-    const tbody = document.getElementById('results-body');
+// function addResultToTable(x, y, R, isHit) {
+//     const tbody = document.getElementById('results-body');
+//     const row = document.createElement('tr');
+//     const cellX = document.createElement('td');
+//     cellX.textContent = x;
+//
+//     const cellY = document.createElement('td');
+//     cellY.textContent = y;
+//
+//     const cellR = document.createElement('td');
+//     cellR.textContent = R;
+//
+//     const cellResult = document.createElement('td');
+//     cellResult.textContent = isHit ? 'Попала' : 'Не попала';
+//     cellResult.className = isHit ? 'hit' : 'miss';
+//
+//     const cellTime = document.createElement('td');
+//     const now = new Date();
+//     cellTime.textContent = now.toLocaleString('ru-RU');
+//
+//     row.appendChild(cellX);
+//     row.appendChild(cellY);
+//     row.appendChild(cellR);
+//     row.appendChild(cellResult);
+//     row.appendChild(cellTime);
+//
+//     tbody.appendChild(row);
+// }
+
+function saveToLocalStorage(result){
+    try{
+        const results = JSON.parse(localStorage.getItem('pointResults')|| '[]');
+        results.push(result);
+        localStorage.setItem('pointResults', JSON.stringify(results));
+    }catch (e) {
+        //TODO
+    }
+}
+
+async function loadFromLocalStorage(){
+    try {
+        const results = JSON.parse(localStorage.getItem('pointResults')|| '[]');
+        const tbody = document.getElementById('results-body');
+        tbody.innerHTML = '';
+
+        results.forEach(item =>{
+            const row = createResultRow(item);
+            tbody.appendChild(row);
+        });
+    }catch (e) {
+        //TODO
+    }
+}
+function createResultRow(item) {
     const row = document.createElement('tr');
     const cellX = document.createElement('td');
-    cellX.textContent = x;
-
+    cellX.textContent = item.x;
     const cellY = document.createElement('td');
-    cellY.textContent = y;
-
+    cellY.textContent = item.y;
     const cellR = document.createElement('td');
-    cellR.textContent = R;
-
+    cellR.textContent = item.r;
     const cellResult = document.createElement('td');
-    cellResult.textContent = isHit ? 'Попала' : 'Не попала';
-    cellResult.className = isHit ? 'hit' : 'miss';
-
+    cellResult.textContent = item.isHit ? 'Попала' : 'Не попала';
+    cellResult.className = item.isHit ? 'hit' : 'miss';
     const cellTime = document.createElement('td');
-    const now = new Date();
-    cellTime.textContent = now.toLocaleString('ru-RU');
+    const date = new Date(item.timestamp);
+    cellTime.textContent = date.toLocaleString('ru-RU', {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
 
     row.appendChild(cellX);
     row.appendChild(cellY);
@@ -332,5 +400,11 @@ function addResultToTable(x, y, R, isHit) {
     row.appendChild(cellResult);
     row.appendChild(cellTime);
 
-    tbody.appendChild(row);
+    return row;
 }
+document.getElementById('clear-btn').addEventListener('click', async () => {
+    if (confirm('Вы уверены, что хотите удалить все результаты?')) {
+        localStorage.removeItem('pointResults');
+        document.getElementById('results-body').innerHTML = '';
+    }
+});
