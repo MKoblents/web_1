@@ -4,8 +4,8 @@ const width = canvas.width;
 const height = canvas.height;
 const centerX= width/2;
 const centerY= height/2;
-const R = 5;
-const scale = 50;
+const R = 3;
+const scale = 60;
 
 
 function toCanvasX(x){
@@ -20,15 +20,15 @@ function toCanvasY(y){
 function drawCanvas(R) {
     ctx.fillStyle = 'rgba(52,152,219,0.7)';
     ctx.fillRect(
-        toCanvasX(-R),
-        toCanvasY(R),
+        toCanvasX(0),
+        toCanvasY(R/2),
         R * scale,
-        R * scale
+        R/2 * scale
     );
 
     ctx.beginPath();
     ctx.moveTo(toCanvasX(0), toCanvasY(0));
-    ctx.lineTo(toCanvasX(R / 2), toCanvasY(0));
+    ctx.lineTo(toCanvasX(-R), toCanvasY(0));
     ctx.lineTo(toCanvasX(0), toCanvasY(R / 2));
     ctx.closePath();
     ctx.fillStyle = 'rgba(52,152,219,0.7)';
@@ -36,14 +36,14 @@ function drawCanvas(R) {
 
     ctx.beginPath();
     ctx.moveTo(toCanvasX(0), toCanvasY(0));
-    ctx.lineTo(toCanvasX(R / 2), toCanvasY(0));
+    ctx.lineTo(toCanvasX(- R / 2), toCanvasY(0));
     ctx.arc(
         toCanvasX(0),
         toCanvasY(0),
         (R / 2) * scale,
-        0,
+        Math.PI,
         Math.PI / 2,
-        false
+        true
     )
     ctx.closePath();
     ctx.fillStyle = 'rgba(52,152,219,0.7)';
@@ -130,15 +130,20 @@ if (selectedX) {
 
 const form = document.getElementById('point-form');
 
-form.addEventListener('submit',async  function (event){
+form.addEventListener('submit',  function (event){
     event.preventDefault();
     clearErrors();
-    const x = getSelectedRadioValue('x');
+    const x = getSelectedCheckboxValue('x');
     const y = document.getElementById('y-input').value.trim();
-    const r = getSelectedRadioValue('r');
+    const r = getSelectedCheckboxValue('r');
+    console.log(x,y,r);
 
     if (x ===null){
         showError('x-error', "Выберите значение Х" );
+        return;
+    }
+    if (x === 'multiple') {
+        showError('x-error', "Выберите только одно значение X (не несколько)");
         return;
     }
     if (y === '') {
@@ -159,6 +164,10 @@ form.addEventListener('submit',async  function (event){
 
     if (r === null) {
         showError('r-error', 'Выберите значение R');
+    }
+    if (r === 'multiple') {
+        showError('r-error', "Выберите только одно значение R (не несколько)");
+        return;
     }
 
     const xNum = parseFloat(x);
@@ -185,18 +194,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     drawCanvas(R);
 });
 function checkHit(x, y, R) {
-    const inSquare = (x >= -R && x <= 0) && (y >= 0 && y <= R);
-    const inCircle = (x >= 0 && y <= 0) && (x * x + y * y <= (R / 2) * (R / 2));
-    const inTriangle = (x>=0 && y>=0) && (y<=-x +R/2);
-    return inSquare || inCircle || inTriangle;
+    const inRectangle = (x >= 0 && x <= R) && (y >= 0 && y <= R / 2);
+    const inTriangle = (x >= -R && x <= 0) && (y >= 0) && (y <= x / 2 + R / 2);
+    const inCircle = (x <= 0 && y <= 0) && (x * x + y * y <= (R / 2) * (R / 2));
+    return inRectangle || inCircle || inTriangle;
 }
 
-function getSelectedRadioValue(name){
-    const selected = document.querySelector(`input[name="${name}"]:checked`);
-    if (selected){
-        return selected.value;
+function getSelectedCheckboxValue(name){
+    const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
+    if (checked.length === 0) return null;
+    if (checked.length>1){
+        return 'multiply';
     }
-    return null;
+    return checked[0].value;
 }
 
 function showError(elementId, message){
@@ -285,4 +295,27 @@ document.getElementById('clear-btn').addEventListener('click', async () => {
         localStorage.removeItem('pointResults');
         document.getElementById('results-body').innerHTML = '';
     }
+});
+document.querySelectorAll('input[name="x"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            document.querySelectorAll('input[name="x"]').forEach(other => {
+                if (other !== this) {
+                    other.checked = false;
+                }
+            });
+        }
+    });
+});
+
+document.querySelectorAll('input[name="r"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            document.querySelectorAll('input[name="r"]').forEach(other => {
+                if (other !== this) {
+                    other.checked = false;
+                }
+            });
+        }
+    });
 });
