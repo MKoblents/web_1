@@ -137,51 +137,47 @@ form.addEventListener('submit',async  function (event){
     const y = document.getElementById('y-input').value.trim();
     const r = getSelectedRadioValue('r');
 
-    let isValid = true;
-
     if (x ===null){
         showError('x-error', "Выберите значение Х" );
-        isValid = false;
+        return;
     }
     if (y === '') {
         showError('y-error', 'Введите значение Y');
-        isValid = false;
-    } else if (isNaN(parseFloat(y))) {
-        showError('y-error', 'Y должен быть числом');
-        isValid = false;
-    } else {
-        const yNum = parseFloat(y);
-        if (yNum < -3 || yNum > 5) {
-            showError('y-error', 'Y должен быть от -3 до 5');
-            isValid = false;
-        }
+        return;
+    }
+    const yRegex = /^-?\d+([.,]\d+)?$/;
+    if (!yRegex.test(y)) {
+        showError('y-error', 'Y должен быть числом (например: 2, -1.5, 0)');
+        return;
+    }
+
+    const yNum = parseFloat(y.replace(',', '.'));
+    if (yNum < -3 || yNum > 5) {
+        showError('y-error', 'Y должен быть от -3 до 5');
+        return;
     }
 
     if (r === null) {
         showError('r-error', 'Выберите значение R');
-        isValid = false;
     }
 
-    if (isValid){
-        const xNum = parseFloat(x);
-        const yNum = parseFloat(y);
-        const rNum = parseFloat(r);
+    const xNum = parseFloat(x);
+    const rNum = parseFloat(r);
 
-        const isHit = checkHit(xNum, yNum, rNum);
-        ctx.clearRect(0, 0, width, height);
-        drawCanvas(R);
-        drawPoint(xNum, yNum, rNum, isHit);
-        const result = {
-            x: xNum,
-            y: yNum,
-            r: rNum,
-            isHit: isHit,
-            timestamp: new Date().toISOString()
-        };
-        const row =createResultRow(result);
-        document.getElementById('results-body').appendChild(row);
-        await saveToLocalStorage(result);
-    }
+    const isHit = checkHit(xNum, yNum, rNum);
+    ctx.clearRect(0, 0, width, height);
+    drawCanvas(R);
+    drawPoint(xNum, yNum, rNum, isHit);
+    const result = {
+        x: xNum,
+        y: yNum,
+        r: rNum,
+        isHit: isHit,
+        timestamp: new Date().toISOString()
+    };
+    const row =createResultRow(result);
+    document.getElementById('results-body').appendChild(row);
+    await saveToLocalStorage(result);
 });
 document.addEventListener('DOMContentLoaded', async () => {
     await loadFromLocalStorage();
