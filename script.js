@@ -4,7 +4,7 @@ const width = canvas.width;
 const height = canvas.height;
 const centerX= width/2;
 const centerY= height/2;
-const R = 2;
+const R = 5;
 const scale = 50;
 
 
@@ -177,10 +177,10 @@ form.addEventListener('submit',async  function (event){
     };
     const row =createResultRow(result);
     document.getElementById('results-body').appendChild(row);
-    await saveToLocalStorage(result);
+    saveToLocalStorage(result);
 });
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadFromLocalStorage();
+    loadFromLocalStorage();
     ctx.clearRect(0, 0, width, height);
     drawCanvas(R);
 });
@@ -235,7 +235,7 @@ function saveToLocalStorage(result){
     }
 }
 
-async function loadFromLocalStorage(){
+function loadFromLocalStorage(){
     try {
         const results = JSON.parse(localStorage.getItem('pointResults')|| '[]');
         const tbody = document.getElementById('results-body');
