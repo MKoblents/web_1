@@ -20,9 +20,7 @@ body {
     margin: 1% 0;
 }
 
-.student-name,
-.group-number,
-.variant-number {
+.student-name, .group-number, .variant-number {
     font-weight: bold;
     color: #e74c3c;
 }
@@ -42,9 +40,7 @@ body {
     justify-content: center;
 }
 
-.canvas-section,
-.form-section,
-.results-section {
+.canvas-section, .form-section, .results-section {
     background-color: white;
     padding: 2%;
     border-radius: 10px;
@@ -62,11 +58,12 @@ body {
     height: auto;
     border: 2px solid #3498db;
     border-radius: 5px;
+    display: block;
 }
 
 .form-group {
-    margin-bottom: 5%;
-    padding: 2%;
+    margin-bottom: 4%;
+    padding: 1%;
 }
 
 .form-group label {
@@ -76,9 +73,9 @@ body {
     color: #2c3e50;
 }
 
-input[type="number"] {
+input[type="number"], input[type="text"] {
     width: 100%;
-    padding: 3%;
+    padding: 2.5%;
     border: 2px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
@@ -86,22 +83,24 @@ input[type="number"] {
     box-sizing: border-box;
 }
 
-input[type="number"]:focus {
+input[type="number"]:focus, input[type="text"]:focus {
     outline: none;
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
-input[type="number"]:invalid:not(:placeholder-shown) {
+input[type="number"]:invalid:not(:placeholder-shown),
+input[type="text"]:invalid:not(:placeholder-shown) {
     border-color: #e74c3c;
 }
 
-input[type="number"]:valid:not(:placeholder-shown) {
+input[type="number"]:valid:not(:placeholder-shown),
+input[type="text"]:valid:not(:placeholder-shown) {
     border-color: #27ae60;
 }
 
 .container > section {
-    margin-bottom: 5%;
+    margin-bottom: 4%;
 }
 
 .error-message {
@@ -112,10 +111,9 @@ input[type="number"]:valid:not(:placeholder-shown) {
     min-height: 20px;
 }
 
-.submit-btn {
+.submit-btn, .clear-btn {
     width: 100%;
     padding: 3%;
-    background-color: #3498db;
     color: white;
     border: none;
     border-radius: 5px;
@@ -123,17 +121,16 @@ input[type="number"]:valid:not(:placeholder-shown) {
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.1s;
+}
+
+.submit-btn {
+    background-color: #3498db;
     margin-bottom: 2%;
 }
 
-.submit-btn:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-}
+.submit-btn:hover { background-color: #2980b9; transform: translateY(-2px); }
+.submit-btn:active { transform: translateY(0); }
 
-.submit-btn:active {
-    transform: translateY(0);
-}
 .results-header {
     display: flex;
     justify-content: space-between;
@@ -151,24 +148,13 @@ input[type="number"]:valid:not(:placeholder-shown) {
     width: auto;
     padding: 2% 4%;
     background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 5px;
     font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
     white-space: nowrap;
 }
 
-.clear-btn:hover {
-    background-color: #c0392b;
-    transform: translateY(-2px);
-}
+.clear-btn:hover { background-color: #c0392b; transform: translateY(-2px); }
+.clear-btn:active { transform: translateY(0); }
 
-.clear-btn:active {
-    transform: translateY(0);
-}
 .radio-group {
     display: flex;
     flex-wrap: wrap;
@@ -187,9 +173,7 @@ input[type="number"]:valid:not(:placeholder-shown) {
     user-select: none;
 }
 
-.radio-label input[type="radio"] {
-    display: none;
-}
+.radio-label input[type="radio"] { display: none; }
 
 .radio-label::before {
     content: "";
@@ -202,10 +186,7 @@ input[type="number"]:valid:not(:placeholder-shown) {
     transition: all 0.3s;
 }
 
-.radio-label span {
-    font-size: 14px;
-    color: #333;
-}
+.radio-label span { font-size: 14px; color: #333; }
 
 .radio-label input[type="radio"]:checked + span {
     font-weight: bold;
@@ -228,78 +209,33 @@ input[type="number"]:valid:not(:placeholder-shown) {
     background-color: rgba(52, 152, 219, 0.05);
 }
 
-input[type="text"] {
-    width: 100%;
-    padding: 3%;
-    border: 2px solid #ddd;
+.table-wrapper {
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    box-sizing: border-box;
-}
-
-input[type="text"]:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-}
-
-input[type="text"]:invalid:not(:placeholder-shown) {
-    border-color: #e74c3c;
-}
-
-input[type="text"]:valid:not(:placeholder-shown) {
-    border-color: #27ae60;
 }
 
 .results-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 5%;
+    margin-top: 0;
 }
 
-.results-table th,
-.results-table td {
+.results-table th, .results-table td {
     border: 1px solid #ddd;
-    padding: 3%;
+    padding: 4% 0%;
     text-align: center;
-}
-
-.results-table th {
-    background-color: #3498db;
-    color: white;
-    font-weight: bold;
-}
-
-.results-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.results-table tr:hover {
-    background-color: #f1f1f1;
-}
-
-.hit {
-    color: #27ae60;
-    font-weight: bold;
-}
-
-.miss {
-    color: #e74c3c;
-    font-weight: bold;
-}
-
-.table-wrapper {
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    vertical-align: middle;
+    white-space: nowrap;
 }
 
 .results-table thead th {
     position: sticky;
     top: 0;
     background-color: #3498db;
+    color: white;
+    font-weight: bold;
     z-index: 10;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -308,20 +244,13 @@ input[type="text"]:valid:not(:placeholder-shown) {
     border-top: none;
 }
 
-.table-wrapper::-webkit-scrollbar {
-    width: 8px;
-}
+.results-table tr:nth-child(even) { background-color: #f9f9f9; }
+.results-table tr:hover { background-color: #f1f1f1; }
 
-.table-wrapper::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
+.hit { color: #27ae60; font-weight: bold; }
+.miss { color: #e74c3c; font-weight: bold; }
 
-.table-wrapper::-webkit-scrollbar-thumb {
-    background: #3498db;
-    border-radius: 4px;
-}
-
-.table-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #2980b9;
-}
+.table-wrapper::-webkit-scrollbar { width: 8px; }
+.table-wrapper::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+.table-wrapper::-webkit-scrollbar-thumb { background: #3498db; border-radius: 4px; }
+.table-wrapper::-webkit-scrollbar-thumb:hover { background: #2980b9; }
