@@ -5,15 +5,15 @@ const height = canvas.height;
 const centerX= width/2;
 const centerY= height/2;
 const R = 2;
-const scale = 100;
+const scale = 50;
 
 
 function toCanvasX(x){
     return centerX + x*scale;
 }
-function numberRelativeToR(n, r){
-    return n*R/r;
-}
+// function numberRelativeToR(n, r){
+//     return n*R/r;
+// }
 function toCanvasY(y){
     return centerY - y*scale;
 }
@@ -166,7 +166,7 @@ form.addEventListener('submit',async  function (event){
 
     const isHit = checkHit(xNum, yNum, rNum);
     ctx.clearRect(0, 0, width, height);
-    drawCanvas(R);
+    drawCanvas(r);
     drawPoint(xNum, yNum, rNum, isHit);
     const result = {
         x: xNum,
@@ -212,8 +212,8 @@ function clearErrors(){
 }
 
 function drawPoint(x, y, R, isHit) {
-    const canvasX = toCanvasX(numberRelativeToR(x, R));
-    const canvasY = toCanvasY(numberRelativeToR(y,R));
+    const canvasX = toCanvasX(x);
+    const canvasY = toCanvasY(y);
 
     ctx.fillStyle = isHit ? '#27ae60' : '#e74c3c';
 
