@@ -18,7 +18,8 @@ function toCanvasY(y){
     return centerY - y*scale;
 }
 function drawCanvas(R) {
-    ctx.fillStyle = 'rgba(52,152,219,0.7)';
+    const color = 'rgba(52,152,219,0.7)'
+    ctx.fillStyle = color;
     ctx.fillRect(
         toCanvasX(0),
         toCanvasY(R/2),
@@ -31,7 +32,7 @@ function drawCanvas(R) {
     ctx.lineTo(toCanvasX(-R), toCanvasY(0));
     ctx.lineTo(toCanvasX(0), toCanvasY(R / 2));
     ctx.closePath();
-    ctx.fillStyle = 'rgba(52,152,219,0.7)';
+    ctx.fillStyle = color;
     ctx.fill();
 
     ctx.beginPath();
@@ -46,7 +47,7 @@ function drawCanvas(R) {
         true
     )
     ctx.closePath();
-    ctx.fillStyle = 'rgba(52,152,219,0.7)';
+    ctx.fillStyle = color;
     ctx.fill();
 
     ctx.beginPath();
@@ -91,7 +92,7 @@ function drawCanvas(R) {
         ctx.lineTo(canvasX, centerY + 10);
         ctx.stroke();
 
-        let label = x;
+        let label;
         if (x === -R) label = '-R';
         else if (x === -R / 2) label = '-R/2';
         else if (x === R) label = 'R';
@@ -121,7 +122,6 @@ function drawCanvas(R) {
 }
 drawCanvas(R);
 
-const y = document.getElementById('y-input').value;
 const selectedX = document.querySelector('input[name="x"]:checked');
 if (selectedX) {
     const xValue = selectedX.value;
