@@ -1,3 +1,4 @@
-qobana.yaml
+qodana.yaml
 eslint.config.mjs
 .idea/
+node_modules/
