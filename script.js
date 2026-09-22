@@ -5,7 +5,7 @@ const height = canvas.height;
 const centerX= width/2;
 const centerY= height/2;
 const R = 3;
-const scale = 60;
+const scale = 140;
 
 
 function toCanvasX(x){
@@ -53,42 +53,42 @@ function drawCanvas(R) {
     ctx.moveTo(0, centerY);
     ctx.lineTo(width, centerY);
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.stroke();
 
     ctx.beginPath();
     ctx.moveTo(centerX, 0);
     ctx.lineTo(centerX, height);
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(width - 10, centerY - 5);
+    ctx.moveTo(width - 20, centerY - 10);
     ctx.lineTo(width, centerY);
-    ctx.lineTo(width - 10, centerY + 5);
+    ctx.lineTo(width - 20, centerY + 10);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(centerX - 5, 10);
+    ctx.moveTo(centerX - 10, 20);
     ctx.lineTo(centerX, 0);
-    ctx.lineTo(centerX + 5, 10);
+    ctx.lineTo(centerX + 10, 20);
     ctx.stroke();
 
 
-    ctx.font = '20px Arial';
+    ctx.font = '30px Arial';
     ctx.fillStyle = 'black';
-    ctx.fillText('X', width - 20, centerY - 10);
-    ctx.fillText('Y', centerX - 20, 20);
+    ctx.fillText('X', width - 20, centerY - 20);
+    ctx.fillText('Y', centerX - 20, 40);
     const xMarks = [-R, -R / 2, R / 2, R];
-    ctx.font = '20px Arial';
+    ctx.font = '30px Arial';
     ctx.textAlign = 'center';
 
     xMarks.forEach(function (x) {
         const canvasX = toCanvasX(x);
         ctx.beginPath();
-        ctx.moveTo(canvasX, centerY - 5);
-        ctx.lineTo(canvasX, centerY + 5);
+        ctx.moveTo(canvasX, centerY - 10);
+        ctx.lineTo(canvasX, centerY + 10);
         ctx.stroke();
 
         let label = x;
@@ -97,7 +97,7 @@ function drawCanvas(R) {
         else if (x === R) label = 'R';
         else label = 'R/2';
 
-        ctx.fillText(label, canvasX, centerY + 20);
+        ctx.fillText(label, canvasX, centerY + 40);
     });
     const yMarks = [-R, -R / 2, R / 2, R];
     ctx.textAlign = 'right';
@@ -106,8 +106,8 @@ function drawCanvas(R) {
         const canvasY = toCanvasY(y);
 
         ctx.beginPath();
-        ctx.moveTo(centerX - 5, canvasY);
-        ctx.lineTo(centerX + 5, canvasY);
+        ctx.moveTo(centerX - 10, canvasY);
+        ctx.lineTo(centerX + 10, canvasY);
         ctx.stroke();
 
         let label = y;
@@ -116,7 +116,7 @@ function drawCanvas(R) {
         else if (y === R / 2) label = 'R/2';
         else if (y === R) label = 'R';
 
-        ctx.fillText(label, centerX - 10, canvasY + 5);
+        ctx.fillText(label, centerX - 20, canvasY + 10);
     });
 }
 drawCanvas(R);
@@ -228,7 +228,7 @@ function drawPoint(x, y, R, isHit) {
     ctx.fillStyle = isHit ? '#27ae60' : '#e74c3c';
 
     ctx.beginPath();
-    ctx.arc(canvasX, canvasY, 6, 0, 2 * Math.PI);
+    ctx.arc(canvasX, canvasY, 12, 0, 2 * Math.PI);
     ctx.fill();
 
     ctx.strokeStyle = 'white';
@@ -241,7 +241,7 @@ function saveToLocalStorage(result){
         results.push(result);
         localStorage.setItem('pointResults', JSON.stringify(results));
     }catch (e) {
-        //TODO
+        console.error('Ошибка при сохранении в LocalStorage:', e);
     }
 }
 
@@ -256,7 +256,7 @@ function loadFromLocalStorage(){
             tbody.appendChild(row);
         });
     }catch (e) {
-        //TODO
+        console.error('Ошибка при загрузке из LocalStorage:', e);
     }
 }
 function createResultRow(item) {
@@ -296,26 +296,26 @@ document.getElementById('clear-btn').addEventListener('click', async () => {
         document.getElementById('results-body').innerHTML = '';
     }
 });
-document.querySelectorAll('input[name="x"]').forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-        if (this.checked) {
-            document.querySelectorAll('input[name="x"]').forEach(other => {
-                if (other !== this) {
-                    other.checked = false;
-                }
-            });
-        }
+function makeCheckboxesExclusive(groupName) {
+    const checkboxes = document.querySelectorAll(`input[name="${groupName}"]`);
+    if (checkboxes.length === 0) {
+        console.warn(`Группа чекбоксов "${groupName}" не найдена`);
+        return false;
+    }
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                checkboxes.forEach(other => {
+                    if (other !== this) {
+                        other.checked = false;
+                    }
+                });
+            }
+        });
     });
-});
 
-document.querySelectorAll('input[name="r"]').forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-        if (this.checked) {
-            document.querySelectorAll('input[name="r"]').forEach(other => {
-                if (other !== this) {
-                    other.checked = false;
-                }
-            });
-        }
-    });
-});
+    return true;
+}
+
+makeCheckboxesExclusive('x');
+makeCheckboxesExclusive('r');
