@@ -11,9 +11,6 @@ const scale = 140;
 function toCanvasX(x){
     return centerX + x*scale;
 }
-// function numberRelativeToR(n, r){
-//     return n*R/r;
-// }
 function toCanvasY(y){
     return centerY - y*scale;
 }
@@ -122,15 +119,7 @@ function drawCanvas(R) {
 }
 drawCanvas(R);
 
-const selectedX = document.querySelector('input[name="x"]:checked');
-if (selectedX) {
-    const xValue = selectedX.value;
-    console.log(xValue);
-}
-
-const form = document.getElementById('point-form');
-
-form.addEventListener('submit',  function (event){
+function submitForm(event){
     event.preventDefault();
     clearErrors();
     const x = getSelectedCheckboxValue('x');
@@ -164,6 +153,7 @@ form.addEventListener('submit',  function (event){
 
     if (r === null) {
         showError('r-error', 'Выберите значение R');
+        return;
     }
     if (r === 'multiple') {
         showError('r-error', "Выберите только одно значение R (не несколько)");
@@ -187,18 +177,14 @@ form.addEventListener('submit',  function (event){
     const row =createResultRow(result);
     document.getElementById('results-body').appendChild(row);
     saveToLocalStorage(result);
-});
-document.addEventListener('DOMContentLoaded', async () => {
-    loadFromLocalStorage();
-    ctx.clearRect(0, 0, width, height);
-    drawCanvas(R);
-});
+}
 function checkHit(x, y, R) {
     const inRectangle = (x >= 0 && x <= R) && (y >= 0 && y <= R / 2);
     const inTriangle = (x >= -R && x <= 0) && (y >= 0) && (y <= x / 2 + R / 2);
     const inCircle = (x <= 0 && y <= 0) && (x * x + y * y <= (R / 2) * (R / 2));
     return inRectangle || inCircle || inTriangle;
 }
+
 
 function getSelectedCheckboxValue(name){
     const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
@@ -319,3 +305,11 @@ function makeCheckboxesExclusive(groupName) {
 
 makeCheckboxesExclusive('x');
 makeCheckboxesExclusive('r');
+
+const form = document.getElementById('point-form');
+form.addEventListener('submit', submitForm );
+document.addEventListener('DOMContentLoaded', () => {
+    loadFromLocalStorage();
+    ctx.clearRect(0, 0, width, height);
+    drawCanvas(R);
+});
