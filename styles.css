@@ -11,7 +11,7 @@ body {
     color: #2c3e50;
     font-size: 18px;
     background-color: #ecf0f1;
-    padding: 3%;
+    padding: 1%;
     border-radius: 8px;
     margin-bottom: 1%;
 }
@@ -52,6 +52,9 @@ body {
 .canvas-section {
     flex: 2;
 }
+.results-section{
+    flex: 1.2;
+}
 
 #coordinate-plane {
     width: 100%;
@@ -73,7 +76,7 @@ body {
     color: #2c3e50;
 }
 
-input[type="number"], input[type="text"] {
+input[type="text"] {
     width: 100%;
     padding: 2.5%;
     border: 2px solid #ddd;
@@ -83,18 +86,16 @@ input[type="number"], input[type="text"] {
     box-sizing: border-box;
 }
 
-input[type="number"]:focus, input[type="text"]:focus {
+input[type="text"]:focus {
     outline: none;
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
-input[type="number"]:invalid:not(:placeholder-shown),
 input[type="text"]:invalid:not(:placeholder-shown) {
     border-color: #e74c3c;
 }
 
-input[type="number"]:valid:not(:placeholder-shown),
 input[type="text"]:valid:not(:placeholder-shown) {
     border-color: #27ae60;
 }
@@ -136,7 +137,7 @@ input[type="text"]:valid:not(:placeholder-shown) {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 3%;
-    flex-wrap: wrap;
+    /*flex-wrap: wrap;*/
     gap: 2%;
 }
 
@@ -146,7 +147,7 @@ input[type="text"]:valid:not(:placeholder-shown) {
 
 .clear-btn {
     width: auto;
-    padding: 2% 4%;
+    padding: 2%;
     background-color: #e74c3c;
     font-size: 14px;
     white-space: nowrap;
@@ -212,7 +213,7 @@ input[type="text"]:valid:not(:placeholder-shown) {
 }
 
 .table-wrapper {
-    max-height: 750px;
+    max-height: 640px;
     overflow-y: auto;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -226,7 +227,7 @@ input[type="text"]:valid:not(:placeholder-shown) {
 
 .results-table th, .results-table td {
     border: 1px solid #ddd;
-    padding: 4% 0%;
+    padding: 4% 0;
     text-align: center;
     vertical-align: middle;
     white-space: nowrap;
