@@ -298,7 +298,12 @@ setInterval(() => {
         refreshAllTimeDisplays();
     }
 }, 5000);
-document.getElementById('clear-btn').addEventListener('click', async () => {
+document.getElementById('clear-btn').addEventListener('click', () => {
+    const tbody = document.getElementById("results-body");
+    if (tbody.childElementCount === 0) {
+        alert("Чтобы что-то удалить, надо это сделать сначала)");
+        return;
+    }
     if (confirm('Вы уверены, что хотите удалить все результаты?')) {
         localStorage.removeItem('pointResults');
         document.getElementById('results-body').innerHTML = '';
