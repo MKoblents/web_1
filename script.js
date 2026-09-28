@@ -257,16 +257,8 @@ function createResultRow(item) {
     cellResult.textContent = item.isHit ? 'Попала' : 'Не попала';
     cellResult.className = item.isHit ? 'hit' : 'miss';
     const cellTime = document.createElement('td');
-    const date = new Date(item.timestamp);
-    cellTime.textContent = date.toLocaleString('ru-RU', {
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
+    cellTime.setAttribute('data-timestamp', item.timestamp);
+    cellTime.textContent = formatTimeToCurrentZone(item.timestamp);
 
     row.appendChild(cellX);
     row.appendChild(cellY);
@@ -276,6 +268,37 @@ function createResultRow(item) {
 
     return row;
 }
+
+function formatTimeToCurrentZone(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleString('ru-RU', {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
+function refreshAllTimeDisplays() {
+    const timeCells = document.querySelectorAll('td[data-timestamp]');
+    timeCells.forEach(cell => {
+        const isoString = cell.getAttribute('data-timestamp');
+        cell.textContent = formatTimeToCurrentZone(isoString);
+    });
+}
+
+let currentSystemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+setInterval(() => {
+    const newSystemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (newSystemTimeZone !== currentSystemTimeZone) {
+        currentSystemTimeZone = newSystemTimeZone;
+        refreshAllTimeDisplays();
+    }
+}, 5000);
 document.getElementById('clear-btn').addEventListener('click', async () => {
     if (confirm('Вы уверены, что хотите удалить все результаты?')) {
         localStorage.removeItem('pointResults');
