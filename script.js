@@ -125,41 +125,40 @@ function submitForm(event){
     const x = getSelectedCheckboxValue('x');
     const y = document.getElementById('y-input').value.trim();
     const r = getSelectedCheckboxValue('r');
-    console.log(x,y,r);
+
+    const error_map = new Map();
 
     if (x ===null){
-        showError('x-error', "Выберите значение Х" );
-        return;
+        error_map.set('x-error', "Выберите значение Х");
     }
     if (x === 'multiple') {
-        showError('x-error', "Выберите только одно значение X (не несколько)");
-        return;
+        error_map.set('x-error', "Выберите только одно значение X (не несколько)");
     }
     if (y === '') {
-        showError('y-error', 'Введите значение Y');
-        return;
+        error_map.set('y-error', 'Введите значение Y');
     }
     const yRegex = /^-?\d+([.,]\d+)?$/;
     if (!yRegex.test(y)) {
-        showError('y-error', 'Y должен быть числом (например: 2, -1.5, 0)');
-        return;
+        error_map.set('y-error', 'Y должен быть числом (например: 2, -1.5, 0)');
     }
 
     const yNum = parseFloat(y.replace(',', '.'));
     if (yNum < -3 || yNum > 5) {
-        showError('y-error', 'Y должен быть от -3 до 5');
-        return;
+        error_map.set('y-error', 'Y должен быть от -3 до 5');
     }
 
     if (r === null) {
-        showError('r-error', 'Выберите значение R');
-        return;
+        error_map.set('r-error', 'Выберите значение R');
     }
     if (r === 'multiple') {
-        showError('r-error', "Выберите только одно значение R (не несколько)");
+        error_map.set('r-error', "Выберите только одно значение R (не несколько)");
+    }
+    if (error_map.size>0){
+        for ([elem, err] of error_map){
+            showError(elem, err);
+        }
         return;
     }
-
     const xNum = parseFloat(x);
     const rNum = parseFloat(r);
 
