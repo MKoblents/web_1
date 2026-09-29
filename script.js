@@ -5,7 +5,7 @@ const height = canvas.height;
 const centerX= width/2;
 const centerY= height/2;
 const R = 3;
-const scale = 140;
+const scale = 110;
 
 
 function toCanvasX(x){
