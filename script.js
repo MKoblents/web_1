@@ -6,14 +6,16 @@ const centerX= width/2;
 const centerY= height/2;
 const R = 3;
 const scale = 110;
-
+let NUMBER = 0;
 
 function toCanvasX(x){
     return centerX + x*scale;
 }
+
 function toCanvasY(y){
     return centerY - y*scale;
 }
+
 function drawCanvas(R) {
     const color = 'rgba(52,152,219,0.7)'
     ctx.fillStyle = color;
@@ -117,7 +119,9 @@ function drawCanvas(R) {
         ctx.fillText(label, centerX - 20, canvasY + 10);
     });
 }
+
 drawCanvas(R);
+drawAllPoints(R);
 
 function submitForm(event){
     event.preventDefault();
@@ -165,7 +169,8 @@ function submitForm(event){
     const isHit = checkHit(xNum, yNum, rNum);
     ctx.clearRect(0, 0, width, height);
     drawCanvas(r);
-    drawPoint(xNum, yNum, rNum, isHit);
+    drawPoint(xNum, yNum, isHit);
+    drawAllPoints(rNum);
     const result = {
         x: xNum,
         y: yNum,
@@ -177,13 +182,13 @@ function submitForm(event){
     document.getElementById('results-body').appendChild(row);
     saveToLocalStorage(result);
 }
+
 function checkHit(x, y, R) {
     const inRectangle = (x >= 0 && x <= R) && (y >= 0 && y <= R / 2);
     const inTriangle = (x >= -R && x <= 0) && (y >= 0) && (y <= x / 2 + R / 2);
     const inCircle = (x <= 0 && y <= 0) && (x * x + y * y <= (R / 2) * (R / 2));
     return inRectangle || inCircle || inTriangle;
 }
-
 
 function getSelectedCheckboxValue(name){
     const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
@@ -206,7 +211,7 @@ function clearErrors(){
     });
 }
 
-function drawPoint(x, y, R, isHit) {
+function drawPoint(x, y, isHit) {
     const canvasX = toCanvasX(x);
     const canvasY = toCanvasY(y);
 
@@ -219,7 +224,9 @@ function drawPoint(x, y, R, isHit) {
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 2;
     ctx.stroke();
+    return true;
 }
+
 function saveToLocalStorage(result){
     try{
         const results = JSON.parse(localStorage.getItem('pointResults')|| '[]');
@@ -244,8 +251,11 @@ function loadFromLocalStorage(){
         console.error('Ошибка при загрузке из LocalStorage:', e);
     }
 }
+
 function createResultRow(item) {
+    let n = NUMBER++;
     const row = document.createElement('tr');
+    row.setAttribute('number', n);
     const cellX = document.createElement('td');
     cellX.textContent = item.x;
     const cellY = document.createElement('td');
@@ -298,6 +308,7 @@ setInterval(() => {
         refreshAllTimeDisplays();
     }
 }, 5000);
+
 document.getElementById('clear-btn').addEventListener('click', () => {
     const tbody = document.getElementById("results-body");
     if (tbody.childElementCount === 0) {
@@ -309,6 +320,7 @@ document.getElementById('clear-btn').addEventListener('click', () => {
         document.getElementById('results-body').innerHTML = '';
     }
 });
+
 function makeCheckboxesExclusive(groupName) {
     const checkboxes = document.querySelectorAll(`input[name="${groupName}"]`);
     if (checkboxes.length === 0) {
@@ -329,14 +341,103 @@ function makeCheckboxesExclusive(groupName) {
 
     return true;
 }
-
+const checkboxes = document.querySelectorAll(`input[name="r"]`);
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            ctx.clearRect(0, 0, width, height);
+            drawCanvas(parseFloat(checkbox.value));
+            drawAllPoints(parseFloat(checkbox.value));
+        }
+    })
+})
 makeCheckboxesExclusive('x');
+
 makeCheckboxesExclusive('r');
 
 const form = document.getElementById('point-form');
+
 form.addEventListener('submit', submitForm );
+
 document.addEventListener('DOMContentLoaded', () => {
     loadFromLocalStorage();
     ctx.clearRect(0, 0, width, height);
     drawCanvas(R);
 });
+
+function getMathCoordinates(event) {
+    const rect = canvas.getBoundingClientRect();
+
+    const pixelX = event.clientX - rect.left;
+    const pixelY = event.clientY - rect.top;
+
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const internalX = pixelX * scaleX;
+    const internalY = pixelY * scaleY;
+
+    const mathX = (internalX - centerX) / scale;
+    const mathY = (centerY - internalY) / scale;
+
+    return { x: mathX, y: mathY };
+}
+
+function addClickedPointToResults(event){
+    let { x, y } = getMathCoordinates(event);
+    x = x.toFixed(2);
+    y = y.toFixed(2);
+
+    let r = getSelectedCheckboxValue('r');
+    if (r === null || r === 'multiple') {
+        r = '3';
+        document.querySelector('input[name="r"][value="3"]').checked = true;
+    }
+    const rNum = parseFloat(r);
+    document.querySelectorAll('input[name="x"]').forEach(cb => cb.checked = false);
+    document.getElementById('y-input').value = y.toString().replace('.', ',');
+    clearErrors();
+    const isHit = checkHit(x, y, rNum);
+    ctx.clearRect(0, 0, width, height);
+    drawCanvas(rNum);
+    drawAllPoints(rNum);
+    drawPoint(x, y, isHit);
+    const result = {
+        x: x,
+        y: y,
+        r: rNum,
+        isHit: isHit,
+        timestamp: new Date().toISOString()
+    };
+
+    const row = createResultRow(result);
+
+    document.getElementById('results-body').appendChild(row);
+    saveToLocalStorage(result);
+}
+
+function drawAllPoints(r){
+    const points = JSON.parse(localStorage.getItem('pointResults') || '[]');
+    const len = points.length;
+    if (len===0) return;
+    let i = 0
+    const intervalID=setInterval(()=>{
+        if (i<len) {
+            let point = points[i];
+            let x = point.x;
+            let y = point.y
+
+            let isHit = checkHit(x, y, r);
+            drawPoint(x, y, isHit);
+            document.querySelector(`tr[number~="${i}"]`).style.backgroundColor = '#000000';
+            i++
+            document.querySelector(`tr[number~="${i-2}"]`).style.backgroundColor = '#ffffff';
+        }else {
+            document.querySelector(`tr[number~="${i-1}"]`).style.backgroundColor = '#ffffff';
+
+            clearInterval(intervalID);
+        }
+
+    },500);
+}
+canvas.addEventListener('click', addClickedPointToResults);
